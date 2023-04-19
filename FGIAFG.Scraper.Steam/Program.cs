@@ -45,6 +45,7 @@ internal class Program
             q.AddTrigger(o =>
                 o.ForJob(key).WithIdentity("ScrapeAndStoreTrigger")
                     .WithCronSchedule(builder.Configuration["Schedule"] ?? "0 0/15 * ? * * *"));
+            q.AddTrigger(o => o.ForJob(key).StartAt(DateTimeOffset.UtcNow.AddSeconds(15)));
             q.UseMicrosoftDependencyInjectionJobFactory();
 
             // JobKey jobKey = new JobKey(JOB_KEY);
