@@ -10,14 +10,32 @@ internal class SteamScraper
 
     private readonly SteamClient client;
     private readonly SteamConnector steamConnector;
+    private readonly Steamoptions steamOptions;
 
-    private static uint? lastChangeNumber = 18482965;
+    private static uint? LastChangeNumber
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(steamOptions.Changelist))
+                return null;
 
-    public SteamScraper(ILogger<SteamScraper> logger, SteamClient client, SteamConnector steamConnector)
+            if (uint.Tryparse(steamOptions.Changelist, out uint parsed))
+                return parsed;
+
+            return null;
+        }
+        set
+        {
+            steamOptions.Changelist = value.ToString();
+        }
+    }
+
+    public SteamScraper(ILogger<SteamScraper> logger, SteamClient client, SteamConnector steamConnector, SteamOptions steamOptions)
     {
         this.logger = logger;
         this.client = client;
         this.steamConnector = steamConnector;
+        this.steamOptions = steamOptions;
     }
 
     public async Task<Result<IEnumerable<FreeGame>>> Scrape(CancellationToken cancellationToken)
@@ -30,7 +48,7 @@ internal class SteamScraper
 
         logger.LogInformation("Getting changes");
         SteamApps.PICSChangesCallback changes = await GetChanges();
-        lastChangeNumber = changes.CurrentChangeNumber;
+        LastChangeNumber = changes.CurrentChangeNumber;
 
         logger.LogInformation("Getting product info");
         SteamApps steamApps = client.GetHandler<SteamApps>()!;
@@ -72,13 +90,13 @@ internal class SteamScraper
         SteamApps steamApps = client.GetHandler<SteamApps>()!;
         SteamApps.PICSChangesCallback? changes = default;
 
-        if (lastChangeNumber == null)
+        if (LastChangeNumber == null)
         {
             changes = await steamApps.PICSGetChangesSince(0, true, true);
         }
         else
         {
-            changes = await steamApps.PICSGetChangesSince(lastChangeNumber.Value, true, true);
+            changes = await steamApps.PICSGetChangesSince(LastChangeNumber.Value, true, true);
         }
 
         return changes;
