@@ -10,16 +10,16 @@ internal class SteamScraper
 
     private readonly SteamClient client;
     private readonly SteamConnector steamConnector;
-    private readonly Steamoptions steamOptions;
+    private readonly SteamOptions steamOptions;
 
-    private static uint? LastChangeNumber
+    private uint? LastChangeNumber
     {
         get
         {
             if (string.IsNullOrEmpty(steamOptions.Changelist))
                 return null;
 
-            if (uint.Tryparse(steamOptions.Changelist, out uint parsed))
+            if (uint.TryParse(steamOptions.Changelist, out uint parsed))
                 return parsed;
 
             return null;
