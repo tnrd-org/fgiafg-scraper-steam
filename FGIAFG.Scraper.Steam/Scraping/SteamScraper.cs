@@ -1,5 +1,6 @@
 ﻿using FGIAFG.Scraper.Steam.SteamApi;
 using FluentResults;
+using Microsoft.Extensions.Options;
 using SteamKit2;
 
 namespace FGIAFG.Scraper.Steam.Scraping;
@@ -30,12 +31,12 @@ internal class SteamScraper
         }
     }
 
-    public SteamScraper(ILogger<SteamScraper> logger, SteamClient client, SteamConnector steamConnector, SteamOptions steamOptions)
+    public SteamScraper(ILogger<SteamScraper> logger, SteamClient client, SteamConnector steamConnector, IOptions<SteamOptions> steamOptions)
     {
         this.logger = logger;
         this.client = client;
         this.steamConnector = steamConnector;
-        this.steamOptions = steamOptions;
+        this.steamOptions = steamOptions.Value;
     }
 
     public async Task<Result<IEnumerable<FreeGame>>> Scrape(CancellationToken cancellationToken)
