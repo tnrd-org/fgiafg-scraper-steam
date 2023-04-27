@@ -24,7 +24,7 @@ internal class Program
         {
             configuration
                 .WriteTo.Console()
-                .MinimumLevel.Debug();
+                .MinimumLevel.Information();
         });
 
         builder.Services.AddDbContext<DbContext>(options =>
