@@ -98,8 +98,9 @@ internal class SteamScraper
         }
         else
         {
-            logger.LogInformation("Using changelist {Changelist}", LastChangeNumber);
-            changes = await steamApps.PICSGetChangesSince(LastChangeNumber.Value, true, true);
+            uint number = LastChangeNumber.Value - 1;
+            logger.LogInformation("Using changelist {Changelist}", number);
+            changes = await steamApps.PICSGetChangesSince(number, true, true);
         }
 
         return changes;
