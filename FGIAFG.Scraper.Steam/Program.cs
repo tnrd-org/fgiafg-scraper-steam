@@ -40,27 +40,14 @@ internal class Program
 
         builder.Services.AddQuartz(q =>
         {
+            q.UseMicrosoftDependencyInjectionJobFactory();
+
             JobKey key = new JobKey("ScrapeAndStoreJob");
             q.AddJob<ScrapeAndStoreJob>(o => o.WithIdentity(key));
+
             q.AddTrigger(o =>
                 o.ForJob(key).WithIdentity("ScrapeAndStoreTrigger")
                     .WithCronSchedule(builder.Configuration["Schedule"] ?? "0 0/15 * ? * * *"));
-            q.AddTrigger(o => o.ForJob(key).StartAt(DateTimeOffset.UtcNow.AddSeconds(15)));
-            q.UseMicrosoftDependencyInjectionJobFactory();
-
-            // JobKey jobKey = new JobKey(JOB_KEY);
-
-            q.UseMicrosoftDependencyInjectionJobFactory();
-            // q.AddJob<SteamScraperJob>(opts => opts
-            //     .WithIdentity(jobKey)
-            //     .DisallowConcurrentExecution());
-            // q.AddTrigger(opts =>
-            // {
-            //     opts.ForJob(jobKey)
-            //         .WithIdentity(TRIGGER_IDENTITY)
-            //         .WithCronSchedule("0 * * ? * * *",
-            //             builder => builder.WithMisfireHandlingInstructionDoNothing());
-            // });
         });
 
         builder.Services.AddQuartzHostedService();
