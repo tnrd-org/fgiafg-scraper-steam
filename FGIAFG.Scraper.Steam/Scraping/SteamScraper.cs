@@ -93,10 +93,12 @@ internal class SteamScraper
 
         if (LastChangeNumber == null)
         {
+            logger.LogInformation("Using changelist 0");
             changes = await steamApps.PICSGetChangesSince(0, true, true);
         }
         else
         {
+            logger.LogInformation("Using changelist {Changelist}", LastChangeNumber);
             changes = await steamApps.PICSGetChangesSince(LastChangeNumber.Value, true, true);
         }
 
