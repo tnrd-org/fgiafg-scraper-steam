@@ -13,25 +13,24 @@ internal class SteamScraper
     private readonly SteamConnector steamConnector;
     private readonly SteamOptions steamOptions;
 
-    private uint? LastChangeNumber
+    private uint LastChangeNumber
     {
         get
         {
             if (string.IsNullOrEmpty(steamOptions.Changelist))
-                return null;
+                return 0;
 
-            if (uint.TryParse(steamOptions.Changelist, out uint parsed))
-                return parsed;
-
-            return null;
+            return uint.TryParse(steamOptions.Changelist, out uint parsed) ? parsed : 0;
         }
-        set
-        {
-            steamOptions.Changelist = value.ToString();
-        }
+        set => steamOptions.Changelist = value.ToString();
     }
 
-    public SteamScraper(ILogger<SteamScraper> logger, SteamClient client, SteamConnector steamConnector, IOptions<SteamOptions> steamOptions)
+    public SteamScraper(
+        ILogger<SteamScraper> logger,
+        SteamClient client,
+        SteamConnector steamConnector,
+        IOptions<SteamOptions> steamOptions
+    )
     {
         this.logger = logger;
         this.client = client;
@@ -41,6 +40,9 @@ internal class SteamScraper
 
     public async Task<Result<IEnumerable<FreeGame>>> Scrape(CancellationToken cancellationToken)
     {
+        logger.LogInformation("Starting scrape");
+        return Result.Ok(new List<FreeGame>().AsEnumerable());
+
         if (!steamConnector.IsLoggedOn || !steamConnector.IsConnected)
         {
             logger.LogWarning("Skipping job because not connected or logged on");

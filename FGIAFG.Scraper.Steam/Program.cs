@@ -56,8 +56,8 @@ internal class Program
         builder.Services.AddSingleton<CallbackManager>(CreateCallbackManager);
         builder.Services.AddSingleton<SteamConnector>();
 
-        builder.Services.AddHostedService<SteamConnectionHandler>();
-        builder.Services.AddHostedService<SteamCallbackWorker>();
+        // builder.Services.AddHostedService<SteamConnectionHandler>();
+        // builder.Services.AddHostedService<SteamCallbackWorker>();
 
         builder.Services.Configure<SteamOptions>(builder.Configuration.GetSection("Steam"));
 
