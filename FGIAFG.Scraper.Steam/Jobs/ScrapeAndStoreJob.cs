@@ -24,6 +24,7 @@ internal class ScrapeAndStoreJob : IJob
     /// <inheritdoc />
     public async Task Execute(IJobExecutionContext context)
     {
+        logger.LogInformation("Starting job");
         CancellationToken ct = context.CancellationToken;
 
         Result<IEnumerable<FreeGame>> result = await scraper.Scrape(ct);
@@ -32,9 +33,14 @@ internal class ScrapeAndStoreJob : IJob
             logger.LogError("Scrape failed. Result: {Result}", result.ToString());
             return;
         }
+        
+        logger.LogInformation("Got {Count} games", result.Value.Count());
 
         if (ct.IsCancellationRequested)
+        {
+            logger.LogInformation("Cancellation requested");
             return;
+        }
 
         foreach (FreeGame freeGame in result.Value)
         {
@@ -57,6 +63,7 @@ internal class ScrapeAndStoreJob : IJob
             });
         }
 
+        logger.LogInformation("Saving changes");
         await dbContext.SaveChangesAsync(ct);
     }
 }

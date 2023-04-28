@@ -41,7 +41,6 @@ internal class SteamScraper
     public async Task<Result<IEnumerable<FreeGame>>> Scrape(CancellationToken cancellationToken)
     {
         logger.LogInformation("Starting scrape");
-        return Result.Ok(new List<FreeGame>().AsEnumerable());
 
         if (!steamConnector.IsLoggedOn || !steamConnector.IsConnected)
         {
