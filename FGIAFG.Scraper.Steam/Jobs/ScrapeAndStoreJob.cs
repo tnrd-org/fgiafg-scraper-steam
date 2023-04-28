@@ -65,5 +65,6 @@ internal class ScrapeAndStoreJob : IJob
 
         logger.LogInformation("Saving changes");
         await dbContext.SaveChangesAsync(ct);
+        logger.LogInformation("Done saving changes");
     }
 }
