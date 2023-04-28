@@ -13,7 +13,7 @@ internal class Scheduler : BackgroundService
         this.provider = provider;
         this.logger = logger;
 
-        string cron = configuration["Schedule"] ?? "0 0/15 * * *";
+        string cron = configuration["Schedule"] ?? "0 0/15 * * * *";
         schedule = CrontabSchedule.TryParse(cron,
             new CrontabSchedule.ParseOptions()
             {
