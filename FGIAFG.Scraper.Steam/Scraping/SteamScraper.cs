@@ -93,17 +93,9 @@ internal class SteamScraper
         SteamApps steamApps = client.GetHandler<SteamApps>()!;
         SteamApps.PICSChangesCallback? changes = default;
 
-        if (LastChangeNumber == null)
-        {
-            logger.LogInformation("Using changelist 0");
-            changes = await steamApps.PICSGetChangesSince(0, true, true);
-        }
-        else
-        {
-            uint number = LastChangeNumber.Value - 1;
-            logger.LogInformation("Using changelist {Changelist}", number);
-            changes = await steamApps.PICSGetChangesSince(number, true, true);
-        }
+        uint number = LastChangeNumber == 0 ? 0 : LastChangeNumber - 1;
+        logger.LogInformation("Using changelist {Changelist}", number);
+        changes = await steamApps.PICSGetChangesSince(number, true, true);
 
         return changes;
     }
