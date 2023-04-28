@@ -3,7 +3,6 @@ using FGIAFG.Scraper.Steam.Scraping;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Quartz;
 using DbContext = FGIAFG.Scraper.Steam.Database.DbContext;
 
 namespace FGIAFG.Scraper.Steam.Jobs;
