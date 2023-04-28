@@ -4,7 +4,6 @@ using FGIAFG.Scraper.Steam.Scraping;
 using FGIAFG.Scraper.Steam.SteamApi;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Quartz;
 using Serilog;
 using SteamKit2;
 using DbContext = FGIAFG.Scraper.Steam.Database.DbContext;
@@ -38,19 +37,8 @@ internal class Program
         builder.Services.AddTransient<SteamScraper>();
         builder.Services.AddHttpClient();
 
-        builder.Services.AddQuartz(q =>
-        {
-            q.UseMicrosoftDependencyInjectionJobFactory();
-
-            JobKey key = new JobKey("ScrapeAndStoreJob");
-            q.AddJob<ScrapeAndStoreJob>(o => o.WithIdentity(key));
-
-            q.AddTrigger(o =>
-                o.ForJob(key).WithIdentity("ScrapeAndStoreTrigger")
-                    .WithCronSchedule(builder.Configuration["Schedule"] ?? "0 0/15 * ? * * *"));
-        });
-
-        builder.Services.AddQuartzHostedService();
+        builder.Services.AddTransient<ScrapeAndStoreCronJob>();
+        builder.Services.AddHostedService<Scheduler>();
 
         builder.Services.AddSingleton<SteamClient>(CreateSteamClient);
         builder.Services.AddSingleton<CallbackManager>(CreateCallbackManager);

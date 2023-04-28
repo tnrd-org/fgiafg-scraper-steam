@@ -8,24 +8,22 @@ using DbContext = FGIAFG.Scraper.Steam.Database.DbContext;
 
 namespace FGIAFG.Scraper.Steam.Jobs;
 
-internal class ScrapeAndStoreJob : IJob
+internal class ScrapeAndStoreCronJob
 {
     private readonly SteamScraper scraper;
     private readonly DbContext dbContext;
-    private readonly ILogger<ScrapeAndStoreJob> logger;
+    private readonly ILogger<ScrapeAndStoreCronJob> logger;
 
-    public ScrapeAndStoreJob(SteamScraper scraper, DbContext dbContext, ILogger<ScrapeAndStoreJob> logger)
+    public ScrapeAndStoreCronJob(SteamScraper scraper, DbContext dbContext, ILogger<ScrapeAndStoreCronJob> logger)
     {
         this.scraper = scraper;
         this.dbContext = dbContext;
         this.logger = logger;
     }
 
-    /// <inheritdoc />
-    public async Task Execute(IJobExecutionContext context)
+    public async Task Execute(CancellationToken ct)
     {
         logger.LogInformation("Starting job");
-        CancellationToken ct = context.CancellationToken;
 
         Result<IEnumerable<FreeGame>> result = await scraper.Scrape(ct);
         if (result.IsFailed)
